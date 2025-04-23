@@ -95,26 +95,46 @@
     </div>
 
     <div class="row g-4">
-        <!-- Distribution Chart -->
+        <!-- Distribución -->
         <div class="col-12 col-xl-8">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                    <div class="d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">Distribución</h5>
-                        <div class="btn-group">
-                            <button class="btn btn-outline-secondary btn-sm active" onclick="cambiarVista('distribucion')">Por Comité</button>
-                            <button class="btn btn-outline-secondary btn-sm" onclick="cambiarVista('tendencia')">Tendencia</button>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-primary active" data-view="porComite">Por Comité</button>
+                            <button type="button" class="btn btn-outline-primary" data-view="tendencia">Tendencia</button>
                         </div>
                     </div>
-                    <div class="chart-container">
-                        <canvas id="distribucionChart"></canvas>
-                        <canvas id="tendenciaChart" style="display: none;"></canvas>
+                </div>
+                <div class="card-body">
+                    <div id="viewPorComite">
+                        <div class="mb-3 d-flex gap-2 justify-content-end">
+                            <select class="form-select form-select-sm" id="filterComite" style="width: auto;">
+                                <option value="">Todos los Comités</option>
+                                @foreach($comites as $comite)
+                                    <option value="{{ $comite->idcomite }}">{{ $comite->nombre }}</option>
+                                @endforeach
+                            </select>
+                            <select class="form-select form-select-sm" id="filterPvl" style="width: auto;">
+                                <option value="">Seleccione PVL</option>
+                                @foreach($pvls as $pvl)
+                                    <option value="{{ $pvl->idpvl }}" data-comite="{{ $pvl->idcomite }}">{{ \Carbon\Carbon::parse($pvl->fecha)->format('d/m/Y') }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div style="height: 250px;">
+                            <canvas id="entregasChart"></canvas>
+                        </div>
+                    </div>
+                    <div id="viewTendencia" style="display: none;">
+                        <!-- Aquí va el contenido de la vista Tendencia -->
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Activity -->
+        <!-- Actividad Reciente -->
         <div class="col-12 col-xl-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
@@ -137,7 +157,6 @@
         </div>
     </div>
 </div>
-
 
 <style>
     .activity-icon {
@@ -172,4 +191,125 @@
         background: #555;
     }
 </style>
+@endsection
+
+@section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Datos para el gráfico
+        const entregasData = @json($entregasData);
+        
+        // Configuración del gráfico
+        const ctx = document.getElementById('entregasChart').getContext('2d');
+        const entregasChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: entregasData.labels,
+                datasets: [{
+                    label: 'Cantidad de Entregas',
+                    data: entregasData.values,
+                    backgroundColor: '#0d6efd',
+                    borderRadius: 4,
+                    barPercentage: 0.4, // Ajusta el ancho de las barras
+                    categoryPercentage: 0.7 // Ajusta el espacio entre grupos de barras
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        },
+                        title: {
+                            display: true,
+                            text: 'Conteo de Entregas'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Cantidad (lt)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 20,
+                        right: 20
+                    }
+                }
+            }
+        });
+
+        // Evento para el filtro de comités
+        document.getElementById('filterComite').addEventListener('change', function(e) {
+            const comiteId = e.target.value;
+            const pvlSelect = document.getElementById('filterPvl');
+            
+            // Mostrar/ocultar opciones de PVL según el comité seleccionado
+            Array.from(pvlSelect.options).forEach(option => {
+                if (!comiteId || option.value === '') {
+                    option.style.display = '';
+                } else {
+                    option.style.display = option.dataset.comite === comiteId ? '' : 'none';
+                }
+            });
+
+            // Resetear selección de PVL
+            pvlSelect.value = '';
+
+            // Actualizar gráfico con datos del comité
+            actualizarGrafico(comiteId);
+        });
+
+        // Evento para el filtro de PVL
+        document.getElementById('filterPvl').addEventListener('change', function(e) {
+            const comiteId = document.getElementById('filterComite').value;
+            const pvlId = e.target.value;
+            actualizarGrafico(comiteId, pvlId);
+        });
+
+        function actualizarGrafico(comiteId, pvlId = null) {
+            let url = '/dashboard/entregas-data?';
+            if (comiteId) url += `idcomite=${comiteId}&`;
+            if (pvlId) url += `idpvl=${pvlId}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    entregasChart.data.labels = data.labels;
+                    entregasChart.data.datasets[0].data = data.values;
+                    entregasChart.update();
+                });
+        }
+
+        // Cambio entre vistas
+        document.querySelectorAll('[data-view]').forEach(button => {
+            button.addEventListener('click', function() {
+                const view = this.dataset.view;
+                
+                // Actualizar botones
+                document.querySelectorAll('[data-view]').forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-outline-primary');
+                });
+                this.classList.add('active');
+                this.classList.add('btn-primary');
+                this.classList.remove('btn-outline-primary');
+                
+                // Mostrar vista seleccionada
+                document.getElementById('viewPorComite').style.display = view === 'porComite' ? 'block' : 'none';
+                document.getElementById('viewTendencia').style.display = view === 'tendencia' ? 'block' : 'none';
+            });
+        });
+    </script>
 @endsection

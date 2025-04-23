@@ -102,7 +102,15 @@ class DashboardController extends Controller
                 'data' => $distribucionPorProducto->values()->all()
             ];
 
-    
+        // Datos para el gráfico de entregas
+        $entregasData = $this->getEntregasData();
+        
+        // Obtener todos los comités para el filtro
+        $comites = Comite::all();
+        
+        // Obtener todos los PVLs ordenados por fecha
+        $pvls = Pvl::orderBy('fecha', 'desc')->get();
+
         return view('dashboard.dashboard_main', compact(
             'totalBeneficiarios',
             'beneficiariosGrowth',
@@ -114,8 +122,63 @@ class DashboardController extends Controller
             'alertasGrowth',
             'recentActivity',
             'availableMonths',
-            'distribucionPorProducto'  
+            'distribucionPorProducto',
+            'entregasData',
+            'comites',
+            'pvls'
         ));
+    }
+
+    private function getEntregasData($comiteId = null, $pvlId = null)
+    {
+        $query = Detallepvl::query();
+        
+        if ($pvlId) {
+            $query->where('idpvl', $pvlId);
+        } else if ($comiteId) {
+            $query->whereHas('pvl', function($q) use ($comiteId) {
+                $q->where('idcomite', $comiteId);
+            });
+        }
+
+        $entregas = $query->get()
+            ->groupBy('cantidad')
+            ->map(function($group) {
+                return $group->count();
+            })
+            ->sortBy(function($count, $cantidad) {
+                return $cantidad;
+            });
+
+        return [
+            'labels' => $entregas->keys()->map(function($cantidad) {
+                return $cantidad . ' lt';
+            })->values()->all(),
+            'values' => $entregas->values()->all()
+        ];
+    }
+
+    public function getEntregasDataJson(Request $request)
+    {
+        return response()->json($this->getEntregasData(
+            $request->idcomite,
+            $request->idpvl
+        ));
+    }
+
+    public function getPvlsPorComite(Request $request)
+    {
+        $pvls = Pvl::where('idcomite', $request->idcomite)
+            ->orderBy('fecha')
+            ->get()
+            ->map(function($pvl) {
+                return [
+                    'id' => $pvl->idpvl,
+                    'label' => $pvl->fecha->format('d/m/Y')
+                ];
+            });
+        
+        return response()->json($pvls);
     }
 
     public function generarReporte(Request $request)

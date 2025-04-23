@@ -16,6 +16,8 @@ Route::get('/', [DashboardController::class, 'index']);
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/dashboard/reporte/{mes}', [DashboardController::class, 'generarReporte'])->name('dashboard.reporte');
+Route::get('/dashboard/entregas-data', [DashboardController::class, 'getEntregasDataJson'])->name('dashboard.entregas-data');
+Route::get('/dashboard/pvls-por-comite', [DashboardController::class, 'getPvlsPorComite'])->name('dashboard.pvls-por-comite');
 
 // Rutas para Categoría
 Route::prefix('categoria')->group(function () {
