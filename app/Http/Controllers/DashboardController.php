@@ -10,44 +10,55 @@ use App\Models\Pvl;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+
+        $availableMonths = Pvl::select(
+            DB::raw("DATE_FORMAT(fecha, '%Y-%m') as value"),
+            DB::raw("DATE_FORMAT(fecha, '%M %Y') as label")
+        )
+        ->distinct()
+        ->orderBy('value', 'desc')
+        ->get()
+        ->toArray();
+    
         // Total de beneficiarios vigentes y crecimiento
         $totalBeneficiarios = Beneficiario::where('estado', 'Vigente')->count();
         // Simplificamos el cálculo para mostrar un crecimiento fijo por ahora
         $beneficiariosGrowth = 5.3;
-
+    
         // Distribución mensual actual
         $now = Carbon::now();
         $currentMonthDetalles = Detallepvl::whereHas('pvl', fn($query) =>
             $query->whereMonth('fecha', $now->month)->whereYear('fecha', $now->year)
         )->get();
         $totalDistribucion = $currentMonthDetalles->sum('cantidad');
-
+    
         // Distribución del mes anterior
         $lastMonth = $now->copy()->subMonth();
         $lastMonthDetalles = Detallepvl::whereHas('pvl', fn($query) =>
             $query->whereMonth('fecha', $lastMonth->month)->whereYear('fecha', $lastMonth->year)
         )->get();
         $lastMonthDistribucion = $lastMonthDetalles->sum('cantidad');
-
+    
         $distribucionGrowth = $lastMonthDistribucion > 0
             ? (($totalDistribucion - $lastMonthDistribucion) / $lastMonthDistribucion) * 100
             : 2.1; // Valor por defecto para la demo
-
+    
         // Comités activos
         $comitesActivos = Comite::count();
         // No hay cambio en comités
         $comitesGrowth = 0;
-
+    
         // Alertas de stock bajo
         $stockBajo = Producto::where('cantidad', '<=', 30)->count();
         // Simulamos 2 alertas menos que el mes pasado
         $alertasGrowth = -2;
-
+    
         // Actividad reciente
         $recentActivity = collect([
             [
@@ -75,7 +86,28 @@ class DashboardController extends Controller
                 'date' => now()->subHours(2)
             ]
         ])->sortByDesc('date')->values();
+    
 
+        $distribucionPorProducto = [
+            'labels' => [],
+            'data' => []
+        ];
+        
+        $productos = Producto::all();
+        foreach ($productos as $producto) {
+            $cantidad = Detallepvl::where('idproductos', $producto->idproductos)
+                ->whereHas('pvl', fn($query) =>
+                    $query->whereMonth('fecha', $now->month)
+                          ->whereYear('fecha', $now->year)
+                )
+                ->sum('cantidad');
+        
+            $distribucionPorProducto['labels'][] = $producto->nombre;
+            $distribucionPorProducto['data'][] = $cantidad;
+        }
+        
+
+    
         return view('dashboard.dashboard_main', compact(
             'totalBeneficiarios',
             'beneficiariosGrowth',
@@ -85,7 +117,9 @@ class DashboardController extends Controller
             'comitesGrowth',
             'stockBajo',
             'alertasGrowth',
-            'recentActivity'
+            'recentActivity',
+            'availableMonths',
+            'distribucionPorProducto'  
         ));
     }
 
