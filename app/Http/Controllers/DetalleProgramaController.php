@@ -3,63 +3,61 @@
 namespace App\Http\Controllers;
 
 use App\Models\Detallepvl;
+use App\Models\Pvl;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 
 class DetalleProgramaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function registro()
     {
-        //
+        $pvls = Pvl::where('estado', 'Vigente')->get();
+        $productos = Producto::all();
+        return view('detalle.registro_detalle', compact('pvls', 'productos'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function mostrar()
     {
-        //
+        $detalles = Detallepvl::with(['pvl', 'producto'])->get();
+        return view('detalle.mostrar_detalle', compact('detalles'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'cantidad' => 'required|numeric|min:0',
+            'precio' => 'required|numeric|min:0',
+            'idproductos' => 'required|exists:productos,idproductos',
+            'idpvl' => 'required|exists:pvl,idpvl'
+        ]);
+
+        Detallepvl::create($request->all());
+        return redirect()->route('detalle-programa.mostrar')->with('success', 'Entrega registrado correctamente');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Detallepvl $detallepvl)
+    public function edit(Detallepvl $detalle)
     {
-        //
+        $pvls = Pvl::where('estado', 'Vigente')->get();
+        $productos = Producto::all();
+        return view('detalle.editar_detalle', compact('detalle', 'pvls', 'productos'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Detallepvl $detallepvl)
+    public function update(Request $request, Detallepvl $detalle)
     {
-        //
+        $request->validate([
+            'cantidad' => 'required|numeric|min:0',
+            'precio' => 'required|numeric|min:0',
+            'idproductos' => 'required|exists:productos,idproductos',
+            'idpvl' => 'required|exists:pvl,idpvl'
+        ]);
+
+        $detalle->update($request->all());
+        return redirect()->route('detalle-programa.mostrar')->with('success', 'Entrega actualizado correctamente');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Detallepvl $detallepvl)
+    public function destroy(Detallepvl $detalle)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Detallepvl $detallepvl)
-    {
-        //
+        $detalle->delete();
+        return redirect()->route('detalle-programa.mostrar')->with('success', 'Entrega eliminado correctamente');
     }
 }

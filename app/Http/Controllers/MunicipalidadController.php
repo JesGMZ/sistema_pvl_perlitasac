@@ -51,24 +51,39 @@ class MunicipalidadController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Municipalidad $municipalidad)
+    public function edit($id)
     {
-        //
+        $municipalidad = Municipalidad::findOrFail($id);
+        return view('municipalidad.editar_municipalidad', compact('municipalidad'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Municipalidad $municipalidad)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'razonsocial' => 'required',
+            'ruc' => 'required|digits:11',
+            'direccion' => 'required',
+            'representante' => 'required'
+        ]);
+
+        $municipalidad = Municipalidad::findOrFail($id);
+        $municipalidad->update($request->all());
+
+        return redirect()->route('municipalidad.mostrar')->with('success', 'Municipalidad actualizada correctamente');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Municipalidad $municipalidad)
+    public function destroy($id)
     {
-        //
+        $municipalidad = Municipalidad::findOrFail($id);
+        $municipalidad->estado = 'Inactivo';
+        $municipalidad->save();
+
+        return redirect()->route('municipalidad.mostrar')->with('success', 'Municipalidad eliminada correctamente');
     }
 }

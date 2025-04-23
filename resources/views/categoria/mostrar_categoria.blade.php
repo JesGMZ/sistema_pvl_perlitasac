@@ -17,7 +17,6 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">ID</th>
                             <th scope="col">Descripción</th>
                             <th scope="col">Estado</th>
                             <th scope="col" class="text-end">Acciones</th>
@@ -26,7 +25,6 @@
                     <tbody>
                         @forelse($categorias as $categoria)
                             <tr>
-                                <td>{{ $categoria->id }}</td>
                                 <td>{{ $categoria->descategoria }}</td>
                                 <td>
                                     <span class="badge bg-success rounded-pill">
@@ -35,15 +33,17 @@
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-end gap-2">
-                                        <button type="button" class="btn btn-info btn-sm" title="Ver detalles">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-warning btn-sm" title="Editar">
+                                        <a href="{{ route('categoria.edit', $categoria) }}" class="btn btn-warning btn-sm" title="Editar">
                                             <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-sm" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        </a>
+                                        <form action="{{ route('categoria.destroy', $categoria) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm" title="Eliminar" 
+                                                onclick="return confirm('¿Está seguro que desea eliminar esta categoría?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

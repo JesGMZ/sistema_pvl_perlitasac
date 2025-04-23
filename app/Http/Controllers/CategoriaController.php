@@ -44,24 +44,37 @@ class CategoriaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Categoria $categoria)
+    public function edit($id)
     {
-        //
+        $categoria = Categoria::findOrFail($id);
+        return view('categoria.editar_categoria', compact('categoria'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Categoria $categoria)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string|max:255'
+        ]);
+
+        $categoria = Categoria::findOrFail($id);
+        $categoria->update($request->all());
+
+        return redirect()->route('categoria.mostrar')->with('success', 'Categoría actualizada correctamente');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Categoria $categoria)
+    public function destroy($id)
     {
-        //
+        $categoria = Categoria::findOrFail($id);
+        $categoria->estado = 'Inactivo';
+        $categoria->save();
+
+        return redirect()->route('categoria.mostrar')->with('success', 'Categoría eliminada correctamente');
     }
 }

@@ -17,7 +17,6 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Descripción</th>
                             <th>Unidad</th>
                             <th>Marca</th>
@@ -31,7 +30,6 @@
                     <tbody>
                         @forelse($productos as $producto)
                             <tr>
-                                <td>{{ $producto->id }}</td>
                                 <td>{{ $producto->descripcion }}</td>
                                 <td>{{ $producto->unidadmedida }}</td>
                                 <td>{{ $producto->marca }}</td>
@@ -41,13 +39,11 @@
                                 <td>{{ $producto->cantidad }}</td>
                                 <td class="text-end">
                                     <div class="d-flex justify-content-end gap-2">
-                                        <a href="#" class="btn btn-info btn-sm" title="Ver detalles">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-warning btn-sm" title="Editar">
+
+                                        <a href="{{ route('producto.edit', $producto->idproductos) }}" class="btn btn-warning btn-sm" title="Editar">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <form method="POST" action="#">
+                                        <form action="{{ route('producto.destroy', $producto->idproductos) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">

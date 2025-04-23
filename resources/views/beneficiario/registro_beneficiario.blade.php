@@ -84,11 +84,11 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Sexo</label>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="sexo" id="sexo_m" value="M" {{ old('sexo') == 'M' ? 'checked' : '' }} required>
+                                    <input class="form-check-input" type="radio" name="sexo" id="sexo_m" value="Masculino" {{ old('sexo') == 'Masculino' ? 'checked' : '' }} required>
                                     <label class="form-check-label" for="sexo_m">Masculino</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="sexo" id="sexo_f" value="F" {{ old('sexo') == 'F' ? 'checked' : '' }} required>
+                                    <input class="form-check-input" type="radio" name="sexo" id="sexo_f" value="Femenino" {{ old('sexo') == 'Femenino' ? 'checked' : '' }} required>
                                     <label class="form-check-label" for="sexo_f">Femenino</label>
                                 </div>
                                 @error('sexo') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
@@ -100,7 +100,7 @@
                                 <select class="form-select @error('idcategoria') is-invalid @enderror" id="idcategoria" name="idcategoria" required>
                                     <option value="">Seleccione una categoría</option>
                                     @foreach($categorias as $cat)
-                                        <option value="{{ $cat->id }}" {{ old('idcategoria') == $cat->id ? 'selected' : '' }}>
+                                        <option value="{{ $cat->idcategoria }}" {{ old('idcategoria') == $cat->id ? 'selected' : '' }}>
                                             {{ $cat->descategoria }}
                                         </option>
                                     @endforeach
@@ -114,7 +114,7 @@
                                 <select class="form-select @error('idsocios') is-invalid @enderror" id="idsocios" name="idsocios" required>
                                     <option value="">Seleccione un socio</option>
                                     @foreach($socios as $socio)
-                                        <option value="{{ $socio->id }}" {{ old('idsocios') == $socio->id ? 'selected' : '' }}>
+                                        <option value="{{ $socio->idsocios }}" {{ old('idsocios') == $socio->id ? 'selected' : '' }}>
                                             {{ $socio->nombres }} {{ $socio->apellidos }}
                                         </option>
                                     @endforeach

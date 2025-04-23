@@ -35,4 +35,9 @@ class Usuario extends Model
 		'estado',
 		'idmunicipalidad'
 	];
+
+	public function municipalidad()
+    {
+        return $this->belongsTo(Municipalidad::class, 'idmunicipalidad');
+    }
 }

@@ -39,13 +39,10 @@
                                 <td>{{ $socio->direccion ?? 'N/A' }}</td>
                                 <td>
                                     <div class="d-flex justify-content-end gap-2">
-                                        <a href="#" class="btn btn-info btn-sm" title="Ver detalles">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-warning btn-sm" title="Editar">
+                                        <a href="{{ route('socio.edit', $socio->idsocios) }}" class="btn btn-warning btn-sm" title="Editar">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <form action="#" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este socio?');">
+                                        <form action="{{ route('socio.destroy', $socio->idsocios) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este socio?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">

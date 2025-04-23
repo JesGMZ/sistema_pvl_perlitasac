@@ -55,7 +55,7 @@ class SocioController extends Controller
      */
     public function edit(Socio $socio)
     {
-        //
+        return view('socio.editar_socio', compact('socio'));
     }
 
     /**
@@ -63,7 +63,18 @@ class SocioController extends Controller
      */
     public function update(Request $request, Socio $socio)
     {
-        //
+        $request->validate([
+            'dni' => 'required|string|max:8',
+            'nombres' => 'required|string|max:255',
+            'apellidos' => 'required|string|max:255',
+            'direccion' => 'required|string|max:255',
+            'sexo' => 'required|string|in:Masculino,Femenino',
+            'fechanacimiento' => 'required|date',
+            'edad' => 'nullable|string|max:10',
+        ]);
+
+        $socio->update($request->all());
+        return redirect()->route('socio.mostrar')->with('success', 'Socio actualizado correctamente');
     }
 
     /**
@@ -71,6 +82,7 @@ class SocioController extends Controller
      */
     public function destroy(Socio $socio)
     {
-        //
+        $socio->delete();
+        return redirect()->route('socio.mostrar')->with('success', 'Socio eliminado correctamente');
     }
 }

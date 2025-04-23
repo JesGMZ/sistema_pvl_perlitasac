@@ -34,16 +34,14 @@
 
                                 <td>
                                     <div class="d-flex justify-content-end gap-2">
-                                        <a href="#" class="btn btn-info btn-sm" title="Ver detalles">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-warning btn-sm" title="Editar">
+                                        <a href="{{ route('comite.edit', $comite) }}" class="btn btn-warning btn-sm" title="Editar">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <form action="#" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este comité?');">
+                                        <form action="{{ route('comite.destroy', $comite) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
+                                            <button type="submit" class="btn btn-danger btn-sm" title="Eliminar" 
+                                                onclick="return confirm('¿Está seguro que desea eliminar este comité?')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>

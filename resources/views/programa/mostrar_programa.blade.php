@@ -41,15 +41,17 @@
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-end gap-2">
-                                        <button type="button" class="btn btn-info btn-sm" title="Ver detalles">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-warning btn-sm" title="Editar">
+                                        <a href="{{ route('programa.edit', $pvl) }}" class="btn btn-warning btn-sm" title="Editar">
                                             <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-sm" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        </a>
+                                        <form action="{{ route('programa.destroy', $pvl) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm" title="Eliminar" 
+                                                onclick="return confirm('¿Está seguro que desea eliminar este registro del programa?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Beneficiario;
+use App\Models\Categoria;
+use App\Models\Socio;
 use Illuminate\Http\Request;
 
 class BeneficiarioController extends Controller
@@ -10,8 +12,8 @@ class BeneficiarioController extends Controller
 
     public function registro()
     {
-        $categorias =  \App\Models\Categoria::where('estado', 'Vigente')->get();
-        $socios =  \App\Models\Socio::all();
+        $categorias =  Categoria::where('estado', 'Vigente')->get();
+        $socios =  Socio::all();
 
         return view('beneficiario.registro_beneficiario', compact('categorias', 'socios'));
     }
@@ -52,7 +54,7 @@ class BeneficiarioController extends Controller
             'estado'          => 'Vigente',
         ]);
 
-        return redirect()->route('beneficiarios.registro')->with('success', 'Beneficiario registrado correctamente.');
+        return redirect()->route('beneficiario.registro')->with('success', 'Beneficiario registrado correctamente.');
     }
 
     /**
@@ -66,24 +68,46 @@ class BeneficiarioController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Beneficiario $beneficiario)
+    public function edit($id)
     {
-        //
+        $beneficiario = Beneficiario::findOrFail($id);
+        $categorias = Categoria::where('estado', 'Vigente')->get();
+        $socios =  Socio::all();
+        return view('beneficiario.editar_beneficiario', compact('beneficiario', 'categorias', 'socios'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Beneficiario $beneficiario)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nombres' => 'required|string|max:255',
+            'apellidos' => 'required|string|max:255',
+            'direccion' => 'nullable|string|max:255',
+            'parentesco' => 'required|string|max:100',
+            'sexo' => 'required|string|in:Masculino,Femenino',
+            'idcategoria' => 'required|exists:categoria,idcategoria',
+            'idsocios' => 'required|exists:socios,idsocios',
+            'fechanacimiento' => 'required|date',
+            'edad' => 'nullable|string|max:10'
+        ]);
+
+        $beneficiario = Beneficiario::findOrFail($id);
+        $beneficiario->update($request->all());
+
+        return redirect()->route('beneficiario.mostrar')->with('success', 'Beneficiario actualizado correctamente');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Beneficiario $beneficiario)
+    public function destroy($id)
     {
-        //
+        $beneficiario = Beneficiario::findOrFail($id);
+        $beneficiario->estado = 'Inactivo';
+        $beneficiario->save();
+
+        return redirect()->route('beneficiario.mostrar')->with('success', 'Beneficiario eliminado correctamente');
     }
 }

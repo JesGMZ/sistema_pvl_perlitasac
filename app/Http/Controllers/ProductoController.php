@@ -57,7 +57,7 @@ class ProductoController extends Controller
      */
     public function edit(Producto $producto)
     {
-        //
+        return view('producto.editar_producto', compact('producto'));
     }
 
     /**
@@ -65,7 +65,18 @@ class ProductoController extends Controller
      */
     public function update(Request $request, Producto $producto)
     {
-        //
+        $request->validate([
+            'descripcion' => 'required|string|max:255',
+            'unidadmedida' => 'required|string|max:100',
+            'marca' => 'nullable|string|max:100',
+            'origen' => 'nullable|string|max:100',
+            'fecha' => 'required|date',
+            'cantidad' => 'required|numeric|min:0',
+            'fechavencimiento' => 'nullable|date|after_or_equal:fecha',
+        ]);
+
+        $producto->update($request->all());
+        return redirect()->route('producto.mostrar')->with('success', 'Producto actualizado correctamente');
     }
 
     /**
@@ -73,6 +84,7 @@ class ProductoController extends Controller
      */
     public function destroy(Producto $producto)
     {
-        //
+        $producto->delete();
+        return redirect()->route('producto.mostrar')->with('success', 'Producto eliminado correctamente');
     }
 }

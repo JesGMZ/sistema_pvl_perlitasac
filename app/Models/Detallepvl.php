@@ -36,4 +36,14 @@ class Detallepvl extends Model
 		'idproductos',
 		'idpvl'
 	];
+
+	public function pvl()
+    {
+        return $this->belongsTo(Pvl::class, 'idpvl');
+    }
+
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class, 'idproductos');
+    }
 }

@@ -41,7 +41,7 @@ class Programa_vaso_de_lecheController extends Controller
             'mes' => $request->mes,
         ]);
 
-        return redirect()->route('programa.registro_programa')->with('success', 'Registro PVL guardado correctamente.');
+        return redirect()->route('programa.registro')->with('success', 'Registro PVL guardado correctamente.');
     }
 
     /**
@@ -57,7 +57,9 @@ class Programa_vaso_de_lecheController extends Controller
      */
     public function edit(Pvl $pvl)
     {
-        //
+        $beneficiarios = \App\Models\Beneficiario::where('estado', 'Vigente')->get();
+        $comites = \App\Models\Comite::all();
+        return view('programa.editar_programa', compact('pvl', 'beneficiarios', 'comites'));
     }
 
     /**
@@ -65,7 +67,21 @@ class Programa_vaso_de_lecheController extends Controller
      */
     public function update(Request $request, Pvl $pvl)
     {
-        //
+        $request->validate([
+            'fecha' => 'required|date',
+            'idbeneficiarios' => 'required|exists:beneficiarios,idbeneficiarios',
+            'idcomite' => 'required|exists:comite,idcomite',
+            'mes' => 'required|string|max:20'
+        ]);
+
+        $pvl->update([
+            'fecha' => $request->fecha,
+            'idbeneficiarios' => $request->idbeneficiarios,
+            'idcomite' => $request->idcomite,
+            'mes' => $request->mes
+        ]);
+
+        return redirect()->route('programa.mostrar')->with('success', 'Registro PVL actualizado correctamente');
     }
 
     /**
@@ -73,6 +89,8 @@ class Programa_vaso_de_lecheController extends Controller
      */
     public function destroy(Pvl $pvl)
     {
-        //
+        $pvl->estado = 'Inactivo';
+        $pvl->save();
+        return redirect()->route('programa.mostrar')->with('success', 'Registro PVL eliminado correctamente');
     }
 }
