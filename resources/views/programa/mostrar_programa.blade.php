@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Categorías')
+@section('title', 'Registros Vaso de Leche')
 
 @section('content')
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Gestión de Categorías</h1>
-        <a href="{{ route('categoria.registro') }}" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Nueva Categoría
+        <h1 class="h3 mb-0">Registros del Programa Vaso de Leche</h1>
+        <a href="{{ route('programa.registro') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Nuevo Registro
         </a>
     </div>
 
@@ -18,19 +18,25 @@
                     <thead>
                         <tr>
                             <th scope="col">ID</th>
-                            <th scope="col">Descripción</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Mes</th>
+                            <th scope="col">Beneficiario</th>
+                            <th scope="col">Comité</th>
                             <th scope="col">Estado</th>
                             <th scope="col" class="text-end">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($categorias as $categoria)
+                        @forelse($pvls as $pvl)
                             <tr>
-                                <td>{{ $categoria->id }}</td>
-                                <td>{{ $categoria->descategoria }}</td>
+                                <td>{{ $pvl->id }}</td>
+                                <td>{{ \Carbon\Carbon::parse($pvl->fecha)->format('d/m/Y') }}</td>
+                                <td>{{ $pvl->mes }}</td>
+                                <td>{{ $pvl->beneficiario->nombres ?? 'No asignado' }}</td>
+                                <td>{{ $pvl->comite->nombre ?? 'No asignado' }}</td>
                                 <td>
-                                    <span class="badge bg-success rounded-pill">
-                                        {{ $categoria->estado }}
+                                    <span class="badge bg-{{ $pvl->estado == 'Vigente' ? 'success' : 'secondary' }} rounded-pill">
+                                        {{ $pvl->estado }}
                                     </span>
                                 </td>
                                 <td>
@@ -49,8 +55,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center py-3 text-muted">
-                                    No hay categorías registradas
+                                <td colspan="7" class="text-center py-3 text-muted">
+                                    No hay registros disponibles
                                 </td>
                             </tr>
                         @endforelse
@@ -67,16 +73,16 @@
         line-height: 1;
         border-radius: 4px;
     }
-    
+
     .badge {
         font-weight: 500;
         padding: 0.5em 0.8em;
     }
-    
+
     .table > :not(caption) > * > * {
         padding: 1rem;
     }
-    
+
     .table thead th {
         background-color: #f8f9fa;
         font-weight: 500;

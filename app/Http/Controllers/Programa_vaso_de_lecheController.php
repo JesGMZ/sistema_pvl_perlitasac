@@ -12,15 +12,16 @@ class Programa_vaso_de_lecheController extends Controller
     {
         $beneficiarios = \App\Models\Beneficiario::all();
         $comites = \App\Models\Comite::all();
-        return view('pvl.registro_pvl', compact('beneficiarios', 'comites'));
+        return view('programa.registro_programa', compact('beneficiarios', 'comites'));
     }
 
     public function mostrar()
     {
-        $programas = Pvl::where('estado', 'Vigente')
-            ->with(['municipalidad', 'comite'])
+        $pvls = Pvl::where('estado', 'Vigente')
+            ->with(['beneficiario', 'comite']) // nombre correcto de relaciones
             ->get();
-        return view('pvl.mostrar_pvl', compact('programas'));
+
+        return view('programa.mostrar_programa', compact('pvls')); // usa $pvls, no $programas
     }
 
     public function store(Request $request)
@@ -40,7 +41,7 @@ class Programa_vaso_de_lecheController extends Controller
             'mes' => $request->mes,
         ]);
 
-        return redirect()->route('pvl.registro')->with('success', 'Registro PVL guardado correctamente.');
+        return redirect()->route('programa.registro_programa')->with('success', 'Registro PVL guardado correctamente.');
     }
 
     /**

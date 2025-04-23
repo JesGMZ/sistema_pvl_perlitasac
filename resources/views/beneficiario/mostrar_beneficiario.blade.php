@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Categorías')
+@section('title', 'Beneficiarios')
 
 @section('content')
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Gestión de Categorías</h1>
-        <a href="{{ route('categoria.registro') }}" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Nueva Categoría
+        <h1 class="h3 mb-0">Gestión de Beneficiarios</h1>
+        <a href="{{ route('beneficiario.registro') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Nuevo Beneficiario
         </a>
     </div>
 
@@ -18,19 +18,35 @@
                     <thead>
                         <tr>
                             <th scope="col">ID</th>
-                            <th scope="col">Descripción</th>
+                            <th scope="col">Nombres</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Dirección</th>
+                            <th scope="col">Parentesco</th>
+                            <th scope="col">Sexo</th>
+                            <th scope="col">Categoría</th>
+                            <th scope="col">Socio</th>
+                            <th scope="col">Fecha Nac.</th>
+                            <th scope="col">Edad</th>
                             <th scope="col">Estado</th>
                             <th scope="col" class="text-end">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($categorias as $categoria)
+                        @forelse($beneficiarios as $beneficiario)
                             <tr>
-                                <td>{{ $categoria->id }}</td>
-                                <td>{{ $categoria->descategoria }}</td>
+                                <td>{{ $beneficiario->id }}</td>
+                                <td>{{ $beneficiario->nombres }}</td>
+                                <td>{{ $beneficiario->apellidos }}</td>
+                                <td>{{ $beneficiario->direccion }}</td>
+                                <td>{{ $beneficiario->parentesco }}</td>
+                                <td>{{ $beneficiario->sexo }}</td>
+                                <td>{{ $beneficiario->categoria->nombre ?? 'Sin categoría' }}</td>
+                                <td>{{ $beneficiario->socio->nombres ?? 'Sin socio' }}</td>
+                                <td>{{ \Carbon\Carbon::parse($beneficiario->fechanacimiento)->format('d/m/Y') }}</td>
+                                <td>{{ $beneficiario->edad }}</td>
                                 <td>
-                                    <span class="badge bg-success rounded-pill">
-                                        {{ $categoria->estado }}
+                                    <span class="badge bg-{{ $beneficiario->estado == 'Vigente' ? 'success' : 'secondary' }} rounded-pill">
+                                        {{ $beneficiario->estado }}
                                     </span>
                                 </td>
                                 <td>
@@ -49,8 +65,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center py-3 text-muted">
-                                    No hay categorías registradas
+                                <td colspan="12" class="text-center py-3 text-muted">
+                                    No hay beneficiarios registrados
                                 </td>
                             </tr>
                         @endforelse

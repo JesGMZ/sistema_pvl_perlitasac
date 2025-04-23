@@ -39,13 +39,14 @@ class Pvl extends Model
 		'mes'
 	];
 
-	public function beneficiarios()
-    {
-        return $this->belongsTo(Beneficiario::class, 'idbeneficiario');
-    }
-
-	public function comites()
-    {
-        return $this->belongsTo(Comite::class, 'idcomite');
-    }	
+	public function beneficiario()
+	{
+		return $this->belongsTo(Beneficiario::class, 'idbeneficiarios');
+	}
+	
+	public function comite()
+	{
+		return $this->belongsTo(Comite::class, 'idcomite');
+	}
+	
 }
