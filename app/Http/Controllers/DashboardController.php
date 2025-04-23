@@ -88,24 +88,19 @@ class DashboardController extends Controller
         ])->sortByDesc('date')->values();
     
 
-        $distribucionPorProducto = [
-            'labels' => [],
-            'data' => []
-        ];
-        
-        $productos = Producto::all();
-        foreach ($productos as $producto) {
-            $cantidad = Detallepvl::where('idproductos', $producto->idproductos)
-                ->whereHas('pvl', fn($query) =>
+            $distribucionPorProducto = Detallepvl::with(['producto', 'pvl'])
+                ->whereHas('pvl', fn($query) => 
                     $query->whereMonth('fecha', $now->month)
-                          ->whereYear('fecha', $now->year)
+                        ->whereYear('fecha', $now->year)
                 )
-                ->sum('cantidad');
-        
-            $distribucionPorProducto['labels'][] = $producto->nombre;
-            $distribucionPorProducto['data'][] = $cantidad;
-        }
-        
+                ->get()
+                ->groupBy(fn($detalle) => $detalle->producto->nombre)
+                ->map(fn($items) => $items->sum('cantidad'));
+
+            $distribucionProductos = [
+                'labels' => $distribucionPorProducto->keys()->all(),
+                'data' => $distribucionPorProducto->values()->all()
+            ];
 
     
         return view('dashboard.dashboard_main', compact(
@@ -126,30 +121,41 @@ class DashboardController extends Controller
     public function generarReporte(Request $request)
     {
         $fecha = Carbon::createFromFormat('Y-m', $request->mes);
-
-        $detalles = Detallepvl::with(['pvl.comite', 'producto'])
+    
+        // Obtener los detalles de los productos distribuidos en el mes y año especificado
+        $detalles = Detallepvl::with(['pvl.comite.municipalidad', 'producto'])
             ->whereHas('pvl', fn($query) => 
                 $query->whereMonth('fecha', $fecha->month)->whereYear('fecha', $fecha->year)
-            )->get();
+            )
+            ->get();
+    
+        // Estructurar los datos para incluir los campos solicitados
+        $datosReporte = $detalles->map(function($detalle) {
+            return [
+                'pvl_fecha' => Carbon::parse($detalle->pvl->fecha)->isoFormat('MMMM YYYY'), 
+                'municipalidad_razonsocial' => $detalle->pvl->comite->municipalidad->razonsocial,  
+                'comite_nombre' => $detalle->pvl->comite->nombre,  
+                'producto_descripcion' => $detalle->producto->descripcion, 
+                'producto_cantidad' => $detalle->producto->cantidad,  
+                'detallepvl_cantidad' => $detalle->cantidad,  
+                'detallepvl_precio' => $detalle->precio,
+                'producto_unidadmedida' => $detalle->producto->unidadmedida,
 
-        $resumenComites = $detalles->groupBy('pvl.comite.nombre')
-            ->map(fn($comiteItems) => [
-                'total_cantidad' => $comiteItems->sum('cantidad'),
-                'productos' => $comiteItems->groupBy('producto.descripcion')
-                    ->map(fn($prodItems) => [
-                        'cantidad' => $prodItems->sum('cantidad'),
-                        'unidad' => $prodItems->first()->producto->unidadmedida
-                    ])
-            ]);
-
+            ];
+        });
+    
+        $totalDistribuido = $detalles->sum('cantidad');
+    
+ 
         $data = [
             'fecha' => $fecha->isoFormat('MMMM YYYY'),
-            'total_distribuido' => $detalles->sum('cantidad'),
-            'total_comites' => $resumenComites->count(),
-            'resumen_comites' => $resumenComites
+            'total_distribuido' => $totalDistribuido,
+            'datos_reporte' => $datosReporte
         ];
-
+    
         $pdf = PDF::loadView('reportes.mensual', $data);
+
         return $pdf->download('reporte-' . $fecha->format('Y-m') . '.pdf');
     }
+    
 }

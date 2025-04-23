@@ -14,28 +14,11 @@
             margin-bottom: 30px;
         }
         .header h1 {
-            color: #2c3e50;
             font-size: 24px;
             margin-bottom: 10px;
         }
-        .header p {
-            color: #7f8c8d;
-            font-size: 16px;
-            margin: 0;
-        }
         .resumen {
-            margin-bottom: 30px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-        }
-        .resumen h2 {
-            color: #2c3e50;
-            font-size: 18px;
-            margin-top: 0;
-        }
-        .resumen p {
-            margin: 5px 0;
+            margin-bottom: 20px;
         }
         table {
             width: 100%;
@@ -43,21 +26,12 @@
             margin-bottom: 30px;
         }
         th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
+            padding: 8px;
+            border: 1px solid #ccc;
             text-align: left;
         }
         th {
-            background-color: #f8f9fa;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-        .productos {
-            margin-left: 20px;
-            font-size: 14px;
+            background-color: #f0f0f0;
         }
         .footer {
             text-align: center;
@@ -70,36 +44,38 @@
 <body>
     <div class="header">
         <h1>Reporte Mensual de Distribución</h1>
-        <p>Programa Vaso de Leche - {{ $fecha }}</p>
+        <p>{{ $fecha }}</p>
     </div>
 
     <div class="resumen">
-        <h2>Resumen General</h2>
-        <p><strong>Total Distribuido:</strong> {{ number_format($total_distribuido, 2) }} kg</p>
-        <p><strong>Total Comités Atendidos:</strong> {{ $total_comites }}</p>
+    <strong>Total Distribuido:</strong> {{ number_format($total_distribuido, 2) }} {{ $datos_reporte->first()['producto_unidadmedidad'] ?? '' }}
     </div>
 
-    <h2>Detalle por Comité</h2>
+
     <table>
         <thead>
             <tr>
+                <th>Fecha</th>
+                <th>Municipalidad</th>
                 <th>Comité</th>
-                <th>Total Distribuido</th>
-                <th>Productos Entregados</th>
+                <th>Producto</th>
+                <th>Cantidad Producto</th>
+                <th>Cantidad Distribuida</th>
+                <th>Precio Unitario</th>
+                <th>Subtotal</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($resumen_comites as $comite => $datos)
+            @foreach($datos_reporte as $fila)
                 <tr>
-                    <td>{{ $comite }}</td>
-                    <td>{{ number_format($datos['total_cantidad'], 2) }} kg</td>
-                    <td>
-                        <div class="productos">
-                            @foreach($datos['productos'] as $producto => $info)
-                                • {{ $producto }}: {{ number_format($info['cantidad'], 2) }} {{ $info['unidad'] }}<br>
-                            @endforeach
-                        </div>
-                    </td>
+                    <td>{{ $fila['pvl_fecha'] }}</td>
+                    <td>{{ $fila['municipalidad_razonsocial'] }}</td>
+                    <td>{{ $fila['comite_nombre'] }}</td>
+                    <td>{{ $fila['producto_descripcion'] }}</td>
+                    <td>{{ number_format($fila['producto_cantidad'], 2) }}</td>
+                    <td>{{ number_format($fila['detallepvl_cantidad'], 2) }}</td>
+                    <td>S/ {{ number_format($fila['detallepvl_precio'], 2) }}</td>
+                    <td>S/ {{ number_format($fila['detallepvl_cantidad'] * $fila['detallepvl_precio'], 2) }}</td>
                 </tr>
             @endforeach
         </tbody>
