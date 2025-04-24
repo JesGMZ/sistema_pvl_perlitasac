@@ -6,6 +6,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Entregas</h1>
+        <link rel="stylesheet" href="{{ asset('css/formone.css') }}">
         <a href="{{ route('detalle-programa.registro') }}" class="btn btn-primary">
             <i class="fas fa-plus me-2"></i>Nueva Entrega
         </a>
@@ -62,19 +63,4 @@
     </div>
 </div>
 
-<style>
-    .table th {
-        background-color: #f8f9fa;
-        font-weight: 500;
-    }
-
-    .table td {
-        vertical-align: middle;
-    }
-
-    .btn-sm {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
-    }
-</style>
 @endsection

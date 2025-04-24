@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
@@ -158,39 +159,7 @@
     </div>
 </div>
 
-<style>
-    .activity-icon {
-        width: 36px;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .bg-light-primary { background-color: rgba(13, 110, 253, 0.1); }
-    .bg-light-success { background-color: rgba(25, 135, 84, 0.1); }
-    .input-group { max-width: 300px; }
-    .card:hover { transform: translateY(-3px); transition: transform 0.2s ease-in-out; }
-    .chart-container { position: relative; height: 350px; }
-    .btn-group .btn.active {
-        background-color: #0d6efd;
-        color: #fff;
-        border-color: #0d6efd;
-    }
-    .activity-list {
-        max-height: 400px;
-        overflow-y: auto;
-    }
-    .activity-list::-webkit-scrollbar {
-        width: 6px;
-    }
-    .activity-list::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 3px;
-    }
-    .activity-list::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-</style>
+
 @endsection
 
 @section('scripts')

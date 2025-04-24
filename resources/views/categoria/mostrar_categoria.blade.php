@@ -6,6 +6,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">Gestión de Categorías</h1>
+        <link rel="stylesheet" href="{{ asset('css/formone.css') }}">
         <a href="{{ route('categoria.registro') }}" class="btn btn-primary">
             <i class="fas fa-plus me-2"></i>Nueva Categoría
         </a>
@@ -61,28 +62,4 @@
     </div>
 </div>
 
-<style>
-    .btn-sm {
-        padding: 0.4rem;
-        line-height: 1;
-        border-radius: 4px;
-    }
-    
-    .badge {
-        font-weight: 500;
-        padding: 0.5em 0.8em;
-    }
-    
-    .table > :not(caption) > * > * {
-        padding: 1rem;
-    }
-    
-    .table thead th {
-        background-color: #f8f9fa;
-        font-weight: 500;
-        text-transform: uppercase;
-        font-size: 0.875rem;
-        letter-spacing: 0.5px;
-    }
-</style>
 @endsection

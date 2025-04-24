@@ -6,6 +6,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">Gestión de Productos</h1>
+        <link rel="stylesheet" href="{{ asset('css/formone.css') }}">
         <a href="{{ route('producto.registro') }}" class="btn btn-primary">
             <i class="fas fa-plus me-2"></i>Nuevo Producto
         </a>
