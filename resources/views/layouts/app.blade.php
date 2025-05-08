@@ -59,7 +59,6 @@
             top: 0;
             right: 0;
             left: 0;
-            z-index: 1039;
             box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
         }
 
@@ -255,5 +254,8 @@
         });
     </script>
     @yield('scripts')
+    
+    <!-- Contenedor para modales -->
+    @yield('modales')
 </body>
 </html>

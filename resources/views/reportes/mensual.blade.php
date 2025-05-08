@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
-<link rel="stylesheet" href="{{ asset('css/reporte.css') }}">
 <head>
     <meta charset="utf-8">
     <title>Reporte Mensual - {{ $fecha }}</title>
+    <link rel="stylesheet" href="{{ asset('css/reporte.css') }}">
 </head>
 <body>
     <div class="header">
