@@ -41,7 +41,7 @@ class ProductoController extends Controller
             'fechavencimiento' => $request->fechavencimiento,
         ]);
 
-        return redirect()->route('productos.registro')->with('success', 'Producto registrado correctamente.');
+        return redirect()->route('producto.mostrar')->with('success', 'Producto registrado correctamente.');
     }
 
     /**

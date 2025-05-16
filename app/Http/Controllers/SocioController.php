@@ -33,7 +33,7 @@ class SocioController extends Controller
             'apellidos' => 'required|string|max:255',
             'dni' => 'required|digits:8',
             'direccion' => 'nullable|string|max:255',
-            'sexo' => 'required|in:Masculino,Femenino',
+            'sexo' => 'required|in:masculino,femenino',
             'fechanacimiento' => 'required|date',
             'edad' => 'required|numeric|min:0',
         ]);
@@ -68,7 +68,7 @@ class SocioController extends Controller
             'nombres' => 'required|string|max:255',
             'apellidos' => 'required|string|max:255',
             'direccion' => 'required|string|max:255',
-            'sexo' => 'required|string|in:Masculino,Femenino',
+            'sexo' => 'required|string|in:masculino,femenino',
             'fechanacimiento' => 'required|date',
             'edad' => 'nullable|string|max:10',
         ]);

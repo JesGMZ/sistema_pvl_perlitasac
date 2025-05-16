@@ -1,19 +1,4 @@
-@extends('layouts.app')
 
-@section('title', 'Registros Vaso de Leche')
-
-@section('content')
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Registros del Programa Vaso de Leche</h1>
-        <link rel="stylesheet" href="{{ asset('css/formone.css') }}">
-        <a href="{{ route('programa.registro') }}" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Nuevo Registro
-        </a>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
@@ -66,8 +51,4 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
-</div>
 
-@endsection

@@ -83,14 +83,14 @@
                             </div>
 
                             <div class="col-md-6 mb-4">
-                                <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
+                                <label for="fechanacimiento" class="form-label">Fecha de Nacimiento</label>
                                 <input type="date" 
-                                       class="form-control @error('fecha_nacimiento') is-invalid @enderror" 
-                                       id="fecha_nacimiento" 
-                                       name="fecha_nacimiento" 
-                                       value="{{ old('fecha_nacimiento') }}"
-                                       required onchange="calcularEdad()">
-                                @error('fecha_nacimiento')
+                                    class="form-control @error('fechanacimiento') is-invalid @enderror" 
+                                    id="fechanacimiento" 
+                                    name="fechanacimiento" 
+                                    value="{{ old('fechanacimiento') }}"
+                                    required onchange="calcularEdad()">
+                                @error('fechanacimiento')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -113,22 +113,22 @@
                                 @enderror
                             </div>
 
-                            <div class="col-md-6 mb-4">
-                                <label for="sexo" class="form-label">Sexo</label>
-                                <select class="form-control @error('sexo') is-invalid @enderror" 
-                                        id="sexo" 
-                                        name="sexo" 
-                                        required>
-                                    <option value="" disabled selected>Seleccione el sexo</option>
-                                    <option value="masculino" {{ old('sexo') == 'masculino' ? 'selected' : '' }}>Masculino</option>
-                                    <option value="femenino" {{ old('sexo') == 'femenino' ? 'selected' : '' }}>Femenino</option>
-                                </select>
-                                @error('sexo')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
+                                <div class="col-md-6 mb-4">
+                                    <label for="sexo" class="form-label">Sexo</label>
+                                    <select class="form-control @error('sexo') is-invalid @enderror" 
+                                            id="sexo" 
+                                            name="sexo" 
+                                            required>
+                                        <option value="">Seleccione el sexo</option> 
+                                        <option value="masculino" {{ old('sexo') == 'masculino' ? 'selected' : '' }}>Masculino</option>
+                                        <option value="femenino" {{ old('sexo') == 'femenino' ? 'selected' : '' }}>Femenino</option>
+                                    </select>
+                                    @error('sexo')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
                         </div>
 
                         <div class="d-flex justify-content-end">
@@ -146,7 +146,7 @@
 
 <script>
     function calcularEdad() {
-        const fechaNacimiento = document.getElementById('fecha_nacimiento').value;
+        const fechaNacimiento = document.getElementById('fechanacimiento').value;
         const fechaNacimientoObj = new Date(fechaNacimiento);
         const today = new Date();
         let edad = today.getFullYear() - fechaNacimientoObj.getFullYear();

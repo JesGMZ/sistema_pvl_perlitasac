@@ -26,11 +26,8 @@
         /* Layout */
         #layoutSidenav {
             display: flex;
-            position: fixed;
-            top: var(--topbar-height);
-            left: 0;
-            right: 0;
-            bottom: 0;
+            min-height: calc(100vh - var(--topbar-height));
+            margin-top: var(--topbar-height);
         }
 
         #layoutSidenav_nav {
@@ -45,11 +42,11 @@
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            min-height: calc(100vh - var(--topbar-height));
             margin-left: var(--sidebar-width);
             transition: margin .15s ease-in-out;
             padding: 1.5rem;
             background-color: var(--body-bg);
+            overflow-y: auto;
         }
 
         /* Topbar */
@@ -167,7 +164,7 @@
                     <li><a class="dropdown-item" href="#"><i class="fas fa-user-circle me-2"></i>Perfil</a></li>
                     <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Configuración</a></li>
                     <li><hr class="dropdown-divider" /></li>
-                    <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                    <li><a class="dropdown-item" href="{{ route('logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
                 </ul>
             </li>
         </ul>
@@ -186,6 +183,10 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-building"></i></div>
                             Municipalidad
                         </a>
+                        <a class="nav-link {{ Request::is('socio*') ? 'active' : '' }}" href="{{ route('socio.mostrar') }}">
+                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                            Socios
+                        </a>
                         <a class="nav-link {{ Request::is('categoria*') ? 'active' : '' }}" href="{{ route('categoria.mostrar') }}">
                             <div class="sb-nav-link-icon"><i class="fas fa-tags"></i></div>
                             Categorías
@@ -202,21 +203,9 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
                             Productos
                         </a>
-                        <a class="nav-link {{ Request::is('pvl*') ? 'active' : '' }}" href="{{ route('programa.mostrar') }}">
+                        <a class="nav-link {{ Request::is('pvl*') ? 'active' : '' }}" href="{{ route('programa.completo') }}">
                             <div class="sb-nav-link-icon"><i class="fas fa-calendar"></i></div>
-                            Programa VL
-                        </a>
-                        <a class="nav-link {{ Request::is('detalle*') ? 'active' : '' }}" href="{{ route('detalle-programa.mostrar') }}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-list"></i></div>
-                            Detalle Programa
-                        </a>
-                        <a class="nav-link {{ Request::is('stock*') ? 'active' : '' }}" href="#">
-                            <div class="sb-nav-link-icon"><i class="fas fa-warehouse"></i></div>
-                            Stocks
-                        </a>
-                        <a class="nav-link {{ Request::is('usuario*') ? 'active' : '' }}" href="#">
-                            <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
-                            Usuarios
+                            Programa Vaso de Leche
                         </a>
                     </div>
                 </div>

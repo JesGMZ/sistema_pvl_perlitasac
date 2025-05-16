@@ -9,10 +9,27 @@ use App\Http\Controllers\MunicipalidadController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\Programa_vaso_de_lecheController;
 use App\Http\Controllers\SocioController;
-use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-Route::get('/', [DashboardController::class, 'index']);
+
+Route::get('/login', function () {
+    return view('usuario.login');
+})->name('login')->middleware('guest');
+
+Route::post('/login', [UserController::class, 'login'])->name('login.post');
+
+Route::get('/logout', function (Request $request) {
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/login');
+})->name('logout');
+
+
+Route::get('/', [DashboardController::class, 'index'])->middleware('auth');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/dashboard/reporte/{mes}', [DashboardController::class, 'generarReporte'])->name('dashboard.reporte');
@@ -83,7 +100,7 @@ Route::prefix('producto')->group(function () {
 Route::prefix('programa')->group(function () {
     Route::get('/registro', [Programa_vaso_de_lecheController::class, 'registro'])->name('programa.registro');
     Route::post('/store', [Programa_vaso_de_lecheController::class, 'store'])->name('programa.store');
-    Route::get('/mostrar', [Programa_vaso_de_lecheController::class, 'mostrar'])->name('programa.mostrar');
+    Route::get('/programa/completo', [Programa_vaso_de_lecheController::class, 'mostrarCompleto']) ->name('programa.completo');
     Route::get('/editar/{pvl}', [Programa_vaso_de_lecheController::class, 'edit'])->name('programa.edit');
     Route::put('/actualizar/{pvl}', [Programa_vaso_de_lecheController::class, 'update'])->name('programa.update');
     Route::delete('/eliminar/{pvl}', [Programa_vaso_de_lecheController::class, 'destroy'])->name('programa.destroy');
@@ -101,10 +118,10 @@ Route::prefix('socio')->group(function () {
 
 // Rutas para Usuario
 Route::prefix('usuario')->group(function () {
-    Route::get('/registro', [UsuarioController::class, 'registro'])->name('usuario.registro');
-    Route::post('/store', [UsuarioController::class, 'store'])->name('usuario.store');
-    Route::get('/mostrar', [UsuarioController::class, 'mostrar'])->name('usuario.mostrar');
-    Route::get('/editar/{usuario}', [UsuarioController::class, 'edit'])->name('usuario.edit');
-    Route::put('/actualizar/{usuario}', [UsuarioController::class, 'update'])->name('usuario.update');
-    Route::delete('/eliminar/{usuario}', [UsuarioController::class, 'destroy'])->name('usuario.destroy');
+    Route::get('/create_admin', [UserController::class, 'showAdminRegistrationForm'])->name('usuario.create_admin');
+    Route::get('/user_view', [UserController::class, 'showUserView'])->name('usuario.vista');
+    Route::post('/create_admin', [UserController::class, 'createAdmin'])->name('usuario.registrar_admin');
+    Route::post('/create_user', [UserController::class, 'createUser'])->name('usuario.registrar_user');
 });
+
+Route::post('/login', [UserController::class, 'login'])->name('login.post');

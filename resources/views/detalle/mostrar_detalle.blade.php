@@ -1,19 +1,4 @@
-@extends('layouts.app')
 
-@section('title', 'Detalles del Programa')
-
-@section('content')
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3">Entregas</h1>
-        <link rel="stylesheet" href="{{ asset('css/formone.css') }}">
-        <a href="{{ route('detalle-programa.registro') }}" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Nueva Entrega
-        </a>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
@@ -59,8 +44,3 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
-</div>
-
-@endsection
