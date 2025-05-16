@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-8">
             <div class="d-flex align-items-center mb-4">
-                <a href="{{ route('detalle-programa.mostrar') }}" class="btn btn-light me-3">
+                <a href="{{ route('programa.completo') }}" class="btn btn-light me-3">
                     <i class="fas fa-arrow-left"></i>
                 </a>
                 <h1 class="h3 mb-0">Registrar Entrega</h1>

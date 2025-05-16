@@ -56,12 +56,13 @@ class CategoriaController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string|max:255'
+            'descategoria' => 'required|string|max:255',
         ]);
 
         $categoria = Categoria::findOrFail($id);
-        $categoria->update($request->all());
+        $categoria->update([
+            'descategoria' => $request->descategoria
+        ]);
 
         return redirect()->route('categoria.mostrar')->with('success', 'Categoría actualizada correctamente');
     }
