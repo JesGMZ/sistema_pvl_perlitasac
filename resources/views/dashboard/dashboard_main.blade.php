@@ -135,27 +135,6 @@
             </div>
         </div>
 
-        <!-- Actividad Reciente -->
-        <div class="col-12 col-xl-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title mb-4">Actividad Reciente</h5>
-                    <div class="activity-list">
-                        @foreach($recentActivity as $activity)
-                            <div class="d-flex align-items-start mb-3">
-                                <div class="activity-icon rounded-circle bg-light-{{ $activity['type'] === 'beneficiario' ? 'primary' : 'success' }} me-3">
-                                    <i class="fas fa-{{ $activity['type'] === 'beneficiario' ? 'user' : 'box' }} text-{{ $activity['type'] === 'beneficiario' ? 'primary' : 'success' }}"></i>
-                                </div>
-                                <div>
-                                    <p class="mb-0">{{ $activity['message'] }}</p>
-                                    <small class="text-muted">{{ \Carbon\Carbon::parse($activity['date'])->diffForHumans() }}</small>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
